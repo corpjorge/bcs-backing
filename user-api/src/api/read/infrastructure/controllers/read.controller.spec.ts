@@ -1,49 +1,49 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { ReadController } from './read.controller';
-import { ServicePort } from '../../domain/ports/service.port';
 
 describe('ReadController', () => {
   let controller: ReadController;
-  let service: { create: jest.Mock };
+  let service: { read: jest.Mock };
 
   beforeEach(async () => {
     service = {
-      create: jest.fn().mockResolvedValue({
-        documentType: 'CC',
-        documentNumber: 12345678,
-        username: 'test',
-      }),
+      read: jest.fn(),
     };
 
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [ReadController],
-      providers: [
-        {
-          provide: ServicePort,
-          useValue: service,
-        },
-      ],
-    }).compile();
-
-    controller = module.get<ReadController>(ReadController);
+    controller = new ReadController(service as never);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should return ok', async () => {
+  it('should delegate to service and return response', async () => {
     const payload = {
       documentType: 'CC',
       documentNumber: 12345678,
       password: '1234',
     };
-
-    await expect(controller.create(payload as never)).resolves.toEqual({
+    const response = {
       documentType: 'CC',
       documentNumber: 12345678,
       username: 'test',
-    });
-    expect(service.create).toHaveBeenCalledWith(payload);
+    };
+
+    service.read.mockResolvedValue(response);
+
+    await expect(controller.read(payload as never)).resolves.toEqual(response);
+    expect(service.read).toHaveBeenCalledWith(payload);
+  });
+
+  it('should propagate service errors', async () => {
+    const payload = {
+      documentType: 'CC',
+      documentNumber: 12345678,
+      password: '1234',
+    };
+    const error = new Error('boom');
+
+    service.read.mockRejectedValue(error);
+
+    await expect(controller.read(payload as never)).rejects.toThrow('boom');
   });
 });

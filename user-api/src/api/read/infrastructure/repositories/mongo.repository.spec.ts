@@ -2,6 +2,14 @@ import { UnauthorizedException } from '@nestjs/common';
 import { randomBytes, scryptSync } from 'crypto';
 import { MongoRepository } from './mongo.repository';
 
+jest.mock('@opentelemetry/api-logs', () => ({
+  logs: {
+    getLogger: () => ({
+      emit: jest.fn(),
+    }),
+  },
+}));
+
 describe('MongoRepository', () => {
   const buildPassword = (password: string): string => {
     const salt = randomBytes(16).toString('hex');
@@ -22,13 +30,14 @@ describe('MongoRepository', () => {
     } as never;
 
     const repository = new MongoRepository(registrationModel);
+    const payload = {
+      documentType: 'CC',
+      documentNumber: 12345678,
+      password: '1234',
+    };
 
     await expect(
-      repository.create({
-        documentType: 'CC',
-        documentNumber: 12345678,
-        password: '1234',
-      } as never),
+      repository.read(payload as never),
     ).resolves.toEqual({
       documentType: 'CC',
       documentNumber: 12345678,
@@ -36,10 +45,31 @@ describe('MongoRepository', () => {
     });
   });
 
+  it('should throw 401 when user does not exist', async () => {
+    const registrationModel = {
+      findOne: jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      }),
+    } as never;
+
+    const repository = new MongoRepository(registrationModel);
+
+    await expect(
+      repository.read({
+        documentType: 'CC',
+        documentNumber: 12345678,
+        password: '1234',
+      } as never),
+    ).rejects.toBeInstanceOf(UnauthorizedException);
+  });
+
   it('should throw 401 when password is invalid', async () => {
     const registrationModel = {
       findOne: jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue({
+          documentType: 'CC',
+          documentNumber: 12345678,
+          username: 'test',
           password: buildPassword('abcd'),
         }),
       }),
@@ -48,7 +78,7 @@ describe('MongoRepository', () => {
     const repository = new MongoRepository(registrationModel);
 
     await expect(
-      repository.create({
+      repository.read({
         documentType: 'CC',
         documentNumber: 12345678,
         password: '1234',
