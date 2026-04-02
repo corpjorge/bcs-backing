@@ -1,6 +1,19 @@
 version: '3.9'
 
 services:
+  user-api:
+    build: ./user-api
+    container_name: user-api
+    restart: always
+    env_file:
+      - ./user-api/.env
+    environment:
+      MONGO_HOST: mongo
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+
   mongo:
     image: mongo:7
     container_name: mongo
