@@ -9,6 +9,7 @@ services:
       - ./user-api/.env
     environment:
       MONGO_HOST: mongo
+      DD_AGENT_HOST: datadog-agent
     depends_on:
       - mongo
     ports:

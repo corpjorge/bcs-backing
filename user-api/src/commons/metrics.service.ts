@@ -6,8 +6,10 @@ export class MetricsService {
   private client: StatsD;
 
   constructor() {
+    const host = process.env.DD_AGENT_HOST ?? '127.0.0.1';
+
     this.client = new StatsD({
-      host: '127.0.0.1',
+      host,
       port: 8125,
       prefix: 'nestjs.',
     });
