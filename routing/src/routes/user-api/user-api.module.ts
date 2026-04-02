@@ -8,5 +8,6 @@ import { MetricsModule } from '../../commons/metrics.module';
   imports: [HttpModule, MetricsModule],
   providers: [UserApiService],
   controllers: [UserApiController],
+  exports: [UserApiService],
 })
 export class UserApiModule {}
