@@ -9,4 +9,9 @@ export class UserApiController {
   async sendUserData(@Body() data: unknown): Promise<unknown> {
     return await this.service.sendUserData(data);
   }
+
+  @Post('/read')
+  async readUserData(@Body() data: unknown): Promise<unknown> {
+    return await this.service.readUserData(data);
+  }
 }

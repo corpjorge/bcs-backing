@@ -7,6 +7,7 @@ import { RequestMethod } from '@nestjs/common';
 import { DecryptMiddleware } from './commons/decrypt.middleware';
 import { HttpModule } from '@nestjs/axios';
 import { EncryptModule } from './routes/encrypt/encrypt.module';
+import { ProductsModule } from './routes/products/products.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { EncryptModule } from './routes/encrypt/encrypt.module';
     HttpModule,
     UserApiModule,
     EncryptModule,
+    ProductsModule,
   ],
   providers: [EncryptInterceptor],
 })

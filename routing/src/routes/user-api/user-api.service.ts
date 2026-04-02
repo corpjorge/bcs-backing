@@ -19,6 +19,17 @@ export class UserApiService {
     return this.postRequest<unknown>(url, data);
   }
 
+  async readUserData(data: unknown): Promise<unknown> {
+    const urlUserApi = process.env.URLUSERAPI;
+
+    if (!urlUserApi) {
+      throw new Error('Missing URLUSERAPI environment variable.');
+    }
+
+    const url = `http://${urlUserApi}/v1/read`;
+    return this.postRequest<unknown>(url, data);
+  }
+
   private postRequest<T>(url: string, data: unknown): Promise<T> {
     return firstValueFrom(
       this.httpService
