@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { MetricsService } from '../../commons/metrics.service';
+import { AuthGuard } from '../../auth/auth.guard';
 
 @Controller('/products/v1/')
 export class ProductsController {
@@ -18,6 +19,7 @@ export class ProductsController {
   }
 
   @Get('/read')
+  @UseGuards(AuthGuard)
   async readProducts(
     @Query() query: Record<string, string | number | boolean>,
   ): Promise<unknown> {
