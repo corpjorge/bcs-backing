@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  datadog-agent:
+    image: gcr.io/datadoghq/agent:latest
+    container_name: datadog-agent
+    hostname: datadog-agent
+    restart: always
+    environment:
+      DD_API_KEY: 178cd146b71145cf5ce30d0e8f62d84e
+      DD_SITE: datadoghq.com
+      DD_DOGSTATSD_NON_LOCAL_TRAFFIC: "true"
+      DD_APM_ENABLED: "true"
+      DD_HOSTNAME: "nestjs-local"
+    ports:
+      - "8125:8125/udp"
+      - "8126:8126/tcp"
+
+volumes:
+  mongo_data:
+  redis_data:
