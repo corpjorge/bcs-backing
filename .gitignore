@@ -1,4 +1,5 @@
 # Ignore IDE folder at repo root and in any nested path
 ide/
 **/ide/
-
+.idea/
+**/.idea/
