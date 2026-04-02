@@ -19,7 +19,7 @@ export class MongoRepository implements RepositoryPort {
     private readonly registrationModel: Model<RegistrationDocument>,
   ) {}
 
-  async create(data: ReadModel): Promise<ReadUserModel> {
+  async read(data: ReadModel): Promise<ReadUserModel> {
     const registration = await this.registrationModel
       .findOne({
         documentType: data.documentType,

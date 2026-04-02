@@ -17,7 +17,7 @@ export class ReadController {
   @Post('/read')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  async create(@Body() dto: ReadDto) {
-    return this.service.create(dto);
+  async read(@Body() dto: ReadDto) {
+    return this.service.read(dto);
   }
 }

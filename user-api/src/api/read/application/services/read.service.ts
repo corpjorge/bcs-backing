@@ -7,7 +7,7 @@ import { ServicePort } from '../../domain/ports/service.port';
 export class ReadService implements ServicePort {
   constructor(private readonly repository: RepositoryPort) {}
 
-  async create(data: ReadModel): Promise<ReadUserModel> {
-    return await this.repository.create(data);
+  async read(data: ReadModel): Promise<ReadUserModel> {
+    return await this.repository.read(data);
   }
 }
