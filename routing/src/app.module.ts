@@ -9,6 +9,7 @@ import { HttpModule } from '@nestjs/axios';
 import { EncryptModule } from './routes/encrypt/encrypt.module';
 import { ProductsModule } from './routes/products/products.module';
 import {MetricsModule} from "./commons/metrics.module";
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import {MetricsModule} from "./commons/metrics.module";
     UserApiModule,
     EncryptModule,
     ProductsModule,
+    AuthModule,
   ],
   providers: [EncryptInterceptor],
 })
