@@ -8,10 +8,13 @@ services:
     env_file:
       - ./routing/.env
     environment:
-      MONGO_HOST: mongo
+      URLUSERAPI: user-api:3002
+      URLPRODUCTAPI: product-api:3003
       DD_AGENT_HOST: datadog-agent
     depends_on:
       - mongo
+      - user-api
+      - product-api
     ports:
       - "3001:3001"
 
