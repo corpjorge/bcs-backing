@@ -11,7 +11,6 @@ import { UserApiModule } from '../routes/user-api/user-api.module';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
     }),
   ],
   providers: [AuthService],
