@@ -1,3 +1,4 @@
+import './commons/tracing';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { EncryptInterceptor } from './commons/encrypt.interceptor';

@@ -1,6 +1,20 @@
 version: '3.9'
 
 services:
+  routing:
+    build: ./routing
+    container_name: routing
+    restart: always
+    env_file:
+      - ./routing/.env
+    environment:
+      MONGO_HOST: mongo
+      DD_AGENT_HOST: datadog-agent
+    depends_on:
+      - mongo
+    ports:
+      - "3001:3001"
+
   user-api:
     build: ./user-api
     container_name: user-api

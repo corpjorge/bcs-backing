@@ -8,10 +8,12 @@ import { DecryptMiddleware } from './commons/decrypt.middleware';
 import { HttpModule } from '@nestjs/axios';
 import { EncryptModule } from './routes/encrypt/encrypt.module';
 import { ProductsModule } from './routes/products/products.module';
+import {MetricsModule} from "./commons/metrics.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    MetricsModule,
     HttpModule,
     UserApiModule,
     EncryptModule,
