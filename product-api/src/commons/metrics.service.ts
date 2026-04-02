@@ -11,7 +11,7 @@ export class MetricsService {
     this.client = new StatsD({
       host,
       port: 8125,
-      prefix: 'product-api.',
+      prefix: 'product.',
     });
   }
 
