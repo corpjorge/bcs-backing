@@ -15,6 +15,22 @@ services:
     ports:
       - "3000:3000"
 
+  product-api:
+    build: ./product-api
+    container_name: product-api
+    restart: always
+    env_file:
+      - ./product-api/.env
+    environment:
+      MONGO_HOST: mongo
+      REDIS_HOST: redis
+      DD_AGENT_HOST: datadog-agent
+    depends_on:
+      - mongo
+      - redis
+    ports:
+      - "3001:3001"
+
   mongo:
     image: mongo:7
     container_name: mongo
