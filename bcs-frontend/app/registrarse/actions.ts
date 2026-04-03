@@ -14,6 +14,12 @@ type EncryptedPayload = {
   data: string;
 };
 
+type ErrorPayload = {
+  message?: unknown;
+  error?: unknown;
+  statusCode?: unknown;
+};
+
 function isEncryptedPayload(value: unknown): value is EncryptedPayload {
   if (!value || typeof value !== "object") {
     return false;
@@ -25,6 +31,18 @@ function isEncryptedPayload(value: unknown): value is EncryptedPayload {
     typeof candidate.iv === "string" &&
     typeof candidate.tag === "string" &&
     typeof candidate.data === "string"
+  );
+}
+
+function isErrorPayload(value: unknown): value is ErrorPayload {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const candidate = value as Record<string, unknown>;
+
+  return (
+    "message" in candidate || "error" in candidate || "statusCode" in candidate
   );
 }
 
@@ -110,7 +128,12 @@ export async function registerUser(
       decryptedResponse: data,
     });
 
-    if (!response.ok) {
+    if (
+      !response.ok ||
+      (isErrorPayload(data) &&
+        typeof data.statusCode === "number" &&
+        data.statusCode >= 400)
+    ) {
       return {
         message:
           data && typeof data === "object" && "message" in data

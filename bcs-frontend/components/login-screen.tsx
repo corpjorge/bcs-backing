@@ -39,6 +39,10 @@ function LoginScreenContent({ registered }: LoginScreenContentProps) {
     loginUser,
     initialLoginActionState,
   );
+  const errorAlertClass =
+    "rounded-2xl border border-[#f3c7c2] bg-[#fff4f2] px-4 py-3 text-sm font-semibold text-[#b42318] shadow-[0_8px_20px_rgba(180,35,24,0.08)]";
+  const successAlertClass =
+    "rounded-2xl border border-[#b7e4c7] bg-[#effaf3] px-4 py-3 text-sm font-semibold text-[#136c37] shadow-[0_8px_20px_rgba(19,108,55,0.08)]";
 
   return (
     <AuthShell>
@@ -53,9 +57,9 @@ function LoginScreenContent({ registered }: LoginScreenContentProps) {
             sin espacios, puntos ni comas.
           </p>
           {registered ? (
-            <p className="text-sm font-semibold text-[#1f7a3d]">
+            <div className={successAlertClass}>
               Registro exitoso. Ahora puede iniciar sesion.
-            </p>
+            </div>
           ) : null}
         </div>
 
@@ -90,7 +94,7 @@ function LoginScreenContent({ registered }: LoginScreenContentProps) {
                 ))}
               </select>
               {errors.documentType ? (
-                <p className="text-sm text-[#ce0e2d]">{errors.documentType}</p>
+                <div className={errorAlertClass}>{errors.documentType}</div>
               ) : null}
             </div>
           </div>
@@ -115,7 +119,7 @@ function LoginScreenContent({ registered }: LoginScreenContentProps) {
               />
               <p className="text-sm text-[#6e87a6]">Ejemplo: CC1234567890</p>
               {errors.usuario ? (
-                <p className="text-sm text-[#ce0e2d]">{errors.usuario}</p>
+                <div className={errorAlertClass}>{errors.usuario}</div>
               ) : null}
             </div>
           </div>
@@ -141,7 +145,7 @@ function LoginScreenContent({ registered }: LoginScreenContentProps) {
                 aria-invalid={Boolean(errors.contrasena)}
               />
               {errors.contrasena ? (
-                <p className="text-sm text-[#ce0e2d]">{errors.contrasena}</p>
+                <div className={errorAlertClass}>{errors.contrasena}</div>
               ) : null}
             </div>
           </div>
@@ -151,7 +155,7 @@ function LoginScreenContent({ registered }: LoginScreenContentProps) {
           </div>
 
           {state.message ? (
-            <p className="text-sm text-[#ce0e2d]">{state.message}</p>
+            <div className={errorAlertClass}>{state.message}</div>
           ) : null}
         </form>
 

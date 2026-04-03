@@ -19,6 +19,8 @@ export function RegisterScreen() {
     registerUser,
     initialRegisterActionState,
   );
+  const errorAlertClass =
+    "rounded-2xl border border-[#f3c7c2] bg-[#fff4f2] px-4 py-3 text-sm font-semibold text-[#b42318] shadow-[0_8px_20px_rgba(180,35,24,0.08)]";
 
   return (
     <AuthShell>
@@ -63,7 +65,7 @@ export function RegisterScreen() {
                 ))}
               </select>
               {errors.documentType ? (
-                <p className="text-sm text-[#ce0e2d]">{errors.documentType}</p>
+                <div className={errorAlertClass}>{errors.documentType}</div>
               ) : null}
             </div>
           </div>
@@ -89,7 +91,7 @@ export function RegisterScreen() {
                 aria-invalid={Boolean(errors.documentNumber)}
               />
               {errors.documentNumber ? (
-                <p className="text-sm text-[#ce0e2d]">{errors.documentNumber}</p>
+                <div className={errorAlertClass}>{errors.documentNumber}</div>
               ) : null}
             </div>
           </div>
@@ -113,7 +115,7 @@ export function RegisterScreen() {
                 aria-invalid={Boolean(errors.username)}
               />
               {errors.username ? (
-                <p className="text-sm text-[#ce0e2d]">{errors.username}</p>
+                <div className={errorAlertClass}>{errors.username}</div>
               ) : null}
             </div>
           </div>
@@ -137,7 +139,7 @@ export function RegisterScreen() {
                 aria-invalid={Boolean(errors.password)}
               />
               {errors.password ? (
-                <p className="text-sm text-[#ce0e2d]">{errors.password}</p>
+                <div className={errorAlertClass}>{errors.password}</div>
               ) : null}
             </div>
           </div>
@@ -147,7 +149,7 @@ export function RegisterScreen() {
           </div>
 
           {state.message ? (
-            <p className="text-sm text-[#ce0e2d]">{state.message}</p>
+            <div className={errorAlertClass}>{state.message}</div>
           ) : null}
         </form>
 
