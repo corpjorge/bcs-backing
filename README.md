@@ -107,3 +107,4 @@ El proyecto incluye una estrategia de QA basada en pruebas unitarias y pruebas e
 - A nivel practico, se priorizan flujos criticos mediante `smoke`, `sanity`, `regression` y `exploratory testing`, complementando la evidencia con `Datadog` y `Grafana`.
 - La trazabilidad de incidentes y evidencias de ejecucion puede complementarse con `Datadog` y `Grafana`, facilitando analisis de defectos, monitoreo y seguimiento posterior a pruebas.
 - Despues de ejecutar pruebas funcionales, se pueden revisar metricas, logs y trazabilidad en `Datadog` y `Grafana`.
+- Pendiente: integracion con playwright
