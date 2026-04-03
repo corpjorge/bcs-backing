@@ -93,8 +93,7 @@ El proyecto incluye una estrategia de QA basada en pruebas unitarias y pruebas e
 - `routing`: cuenta con `unit tests` y pruebas `e2e`.
 - `user-api`: cuenta con `unit tests` y pruebas `e2e`.
 - `product-api`: cuenta con `unit tests` y pruebas `e2e`.
-- Bajo enfoque `ISTQB`, la estrategia aplica a todas las apps del proyecto con pruebas funcionales y no funcionales, cubriendo niveles `unit`, `integration`, `system` y `acceptance` segun el flujo evaluado.
-- A nivel practico, esto se traduce en validar funcionalidades esperadas, integracion entre componentes, comportamiento del sistema completo y criterios de aceptacion para `bcs-frontend`, `routing`, `user-api` y `product-api`.
-- Tambien se consideran tecnicas de caja negra, caja blanca y pruebas orientadas al riesgo, con foco en smoke testing, sanity testing, regression testing y exploratory testing sobre flujos criticos.
+- `bcs-frontend`, `routing`, `user-api` y `product-api` con pruebas funcionales y no funcionales en niveles `unit`, `integration`, `system` y `acceptance`.
+- A nivel practico, se priorizan flujos criticos mediante `smoke`, `sanity`, `regression` y `exploratory testing`, complementando la evidencia con `Datadog` y `Grafana`.
 - La trazabilidad de incidentes y evidencias de ejecucion puede complementarse con `Datadog` y `Grafana`, facilitando analisis de defectos, monitoreo y seguimiento posterior a pruebas.
 - Despues de ejecutar pruebas funcionales, se pueden revisar metricas, logs y trazabilidad en `Datadog` y `Grafana`.
