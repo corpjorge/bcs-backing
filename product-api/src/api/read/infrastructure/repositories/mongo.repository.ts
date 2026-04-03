@@ -16,9 +16,9 @@ export class ProductRepository implements RepositoryPort {
   ) {}
 
   async read(data: ProductModel): Promise<{ message: string; data: any }> {
-    const result = await this.productModel.findOne({
+    const result = await this.productModel.find({
       user: data.user,
-    });
+    }).exec();
     this.logger.emit({
       severityText: 'INFO',
       body: 'product searched',
