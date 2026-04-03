@@ -88,11 +88,13 @@ GRAFANA LINK: https://corpjorge.grafana.net/public-dashboards/4e6d0c00f7cb4fa2b6
 
 ## QA
 
-Para validaciones funcionales y tecnicas del proyecto se recomienda ejecutar pruebas, lint y revision manual de los servicios principales.
+El proyecto incluye una estrategia de QA basada en pruebas unitarias y pruebas end-to-end para validar la logica de negocio, los controladores y la integracion entre servicios.
 
-- `bcs-frontend`: ejecutar `npm run lint` para validar el frontend en Next.js.
-- `routing`: ejecutar `npm run lint` y `npm test`.
-- `user-api`: ejecutar `npm run lint` y `npm test`.
-- `product-api`: ejecutar `npm run lint` y `npm test`.
-- Validar el flujo integrado levantando el entorno con `docker compose up --build -d`.
-- Revisar metricas, logs y trazabilidad en `Datadog` y `Grafana` despues de probar endpoints.
+- `routing`: cuenta con `unit tests` y pruebas `e2e`.
+- `user-api`: cuenta con `unit tests` y pruebas `e2e`.
+- `product-api`: cuenta con `unit tests` y pruebas `e2e`.
+- Bajo enfoque `ISTQB`, la estrategia aplica a todas las apps del proyecto con pruebas funcionales y no funcionales, cubriendo niveles `unit`, `integration`, `system` y `acceptance` segun el flujo evaluado.
+- A nivel practico, esto se traduce en validar funcionalidades esperadas, integracion entre componentes, comportamiento del sistema completo y criterios de aceptacion para `bcs-frontend`, `routing`, `user-api` y `product-api`.
+- Tambien se consideran tecnicas de caja negra, caja blanca y pruebas orientadas al riesgo, con foco en smoke testing, sanity testing, regression testing y exploratory testing sobre flujos criticos.
+- La trazabilidad de incidentes y evidencias de ejecucion puede complementarse con `Datadog` y `Grafana`, facilitando analisis de defectos, monitoreo y seguimiento posterior a pruebas.
+- Despues de ejecutar pruebas funcionales, se pueden revisar metricas, logs y trazabilidad en `Datadog` y `Grafana`.
