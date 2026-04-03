@@ -41,7 +41,7 @@ Flujo principal de comunicacion:
 - `user-api` y `product-api` persisten informacion en `MongoDB`.
 - `product-api` usa `Redis` como apoyo para cache.
 - `product-api` puede consumir servicios externos expuestos por `MuleSoft` para temas de prueba consume un mock de `Postman`.
-- Los servicios backend envian telemetria a `Datadog`.
+- Los servicios backend envian metricas a `Datadog Agent` y exportan logs mediante `OpenTelemetry` hacia `Grafana`.
 
 ## Aplicaciones
 
@@ -57,5 +57,29 @@ Flujo principal de comunicacion:
 - `MongoDB` como base de datos principal.
 - `Redis` para cache y soporte de alto rendimiento.
 - `Postman / MuleSoft` como integracion externa simulada mediante mock para pruebas de consumo.
-- `Datadog` y `OpenTelemetry` para trazabilidad y monitoreo.
+- `Datadog`, `Grafana` y `OpenTelemetry` para trazabilidad, logs y monitoreo.
 - `Arquitectura hexagonal` para separar dominio, aplicacion e infraestructura.
+
+
+## Observabilidad
+
+La implementacion actual de observabilidad esta presente en `routing`, `user-api` y `product-api`.
+
+- Cada servicio inicia `OpenTelemetry` desde `main.ts` importando `./commons/tracing`.
+  -- El host de metricas se resuelve con la variable de entorno `DD_AGENT_HOST`, que en Docker Compose apunta a `datadog-agent`.
+
+Servicios validados:
+
+- `routing`: prefijo de metricas `routing.` en [routing/src/commons/metrics.service.ts](/C:/Jorge/Dev/bcs/bcs-backing/routing/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [routing/src/main.ts](/C:/Jorge/Dev/bcs/bcs-backing/routing/src/main.ts).
+- `user-api`: prefijo de metricas `nestjs.` en [user-api/src/commons/metrics.service.ts](/C:/Jorge/Dev/bcs/bcs-backing/user-api/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [user-api/src/main.ts](/C:/Jorge/Dev/bcs/bcs-backing/user-api/src/main.ts).
+- `product-api`: prefijo de metricas `product.` en [product-api/src/commons/metrics.service.ts](/C:/Jorge/Dev/bcs/bcs-backing/product-api/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [product-api/src/main.ts](/C:/Jorge/Dev/bcs/bcs-backing/product-api/src/main.ts).
+
+## Datadog
+![datadog.png](doc/datadog.png)
+
+DATADOG LINK: https://p.datadoghq.com/sb/i414et4xdvq0gunm-734381b95c91cab1a5340eff1da78fd6
+
+## Grafana
+![grafana.png](doc/grafana.png)
+
+GRAFANA LINK: https://corpjorge.grafana.net/public-dashboards/4e6d0c00f7cb4fa2b6f8698946542158
