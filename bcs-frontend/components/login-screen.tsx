@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { Suspense, useActionState } from "react";
 import { useSearchParams } from "next/navigation";
 import { loginUser } from "@/app/actions/auth";
 import type { LoginActionState } from "@/app/actions/auth";
@@ -15,13 +15,30 @@ const initialLoginActionState: LoginActionState = {
 };
 
 export function LoginScreen() {
+  return (
+    <Suspense fallback={<LoginScreenContent registered={false} />}>
+      <LoginScreenSearchParams />
+    </Suspense>
+  );
+}
+
+function LoginScreenSearchParams() {
+  const searchParams = useSearchParams();
+  const registered = searchParams.get("registered") === "1";
+
+  return <LoginScreenContent registered={registered} />;
+}
+
+type LoginScreenContentProps = {
+  registered: boolean;
+};
+
+function LoginScreenContent({ registered }: LoginScreenContentProps) {
   const { values, errors, handleChange, handleSubmit } = useLoginForm();
   const [state, formAction] = useActionState(
     loginUser,
     initialLoginActionState,
   );
-  const searchParams = useSearchParams();
-  const registered = searchParams.get("registered") === "1";
 
   return (
     <AuthShell>

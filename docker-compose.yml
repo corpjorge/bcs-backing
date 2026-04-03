@@ -1,6 +1,18 @@
 version: '3.9'
 
 services:
+  frontend:
+    build: ./bcs-frontend
+    container_name: bcs-frontend
+    env_file:
+      - ./bcs-frontend/.env
+    environment:
+      BACKENDAPI: routing:3001
+    depends_on:
+      - routing
+    ports:
+      - "3000:3000"
+
   routing:
     build: ./routing
     container_name: routing
