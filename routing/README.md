@@ -1,98 +1,210 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# routing
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Servicio construido con `NestJS` que funciona como gateway entre `bcs-frontend` y los microservicios backend. Su responsabilidad principal es centralizar el acceso a `user-api` y `product-api`, aplicar cifrado y descifrado de payloads, exponer endpoints unificados y proteger operaciones sensibles mediante autenticacion con `JWT`.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Que hace este proyecto
 
-## Description
+- Recibe solicitudes del frontend y las enruta hacia `user-api` y `product-api`.
+- Desencripta automaticamente los cuerpos de entrada antes de procesarlos.
+- Encripta automaticamente las respuestas de salida.
+- Expone endpoints para `encrypt` y `decrypt`.
+- Genera tokens `JWT` para proteger rutas sensibles.
+- Publica metricas en `Datadog` y logs en `OpenTelemetry`.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Rol dentro de la plataforma
 
-## Project setup
+`routing` es la capa que conecta el frontend con los backends. En lugar de que `bcs-frontend` consuma directamente `user-api` o `product-api`, las solicitudes pasan por este servicio para aplicar reglas comunes de seguridad, cifrado, autenticacion y trazabilidad.
+
+## Arquitectura
+
+El proyecto esta organizado en modulos funcionales:
+
+- `routes/user-api`: proxy hacia `user-api`.
+- `routes/products`: proxy hacia `product-api`.
+- `routes/encrypt`: endpoints auxiliares para cifrar y descifrar payloads.
+- `auth`: autenticacion y generacion de `JWT`.
+- `commons`: cifrado, middleware de descifrado, interceptor de cifrado, metricas y tracing.
+
+## Diagrama de arquitectura
+
+![routing.png](../doc/routing.png)
+
+## Seguridad y cifrado
+
+El gateway utiliza `AES-256-GCM` para cifrar y descifrar payloads. La clave se obtiene desde la variable de entorno `APPENCKEY` y debe estar codificada en `base64` con un tamano de `32 bytes`.
+
+Campos del payload cifrado:
+
+- `iv`: vector de inicializacion usado por `AES-GCM`. En este proyecto se genera aleatoriamente con `12 bytes` y se envia en `base64`.
+- `tag`: etiqueta de autenticacion generada por `GCM`. Permite verificar integridad y autenticidad del mensaje.
+- `data`: contenido cifrado del JSON original, codificado en `base64`.
+
+Flujo de seguridad:
+
+- Todas las rutas con body pasan primero por `DecryptMiddleware`, excepto `POST /encrypt` y `POST /decrypt`.
+- Si el body llega cifrado con `iv`, `tag` y `data`, el middleware lo descifra y entrega el JSON limpio al controlador.
+- Las respuestas se cifran automaticamente mediante `EncryptInterceptor`.
+- `POST /decrypt` omite el cifrado de salida para devolver el contenido descifrado.
+- `GET /products/v1/read` esta protegido con `JWT` usando `AuthGuard`.
+
+## Endpoints principales
+
+### Usuarios
+
+- `POST /users-api/v1/registration`: registra usuarios en `user-api`.
+- `POST /users-api/v1/read`: consulta usuario y valida credenciales en `user-api`.
+
+### Productos
+
+- `POST /products/v1/registration`: registra productos en `product-api`.
+- `GET /products/v1/read`: consulta productos registrados. Requiere `Bearer token`.
+- `GET /products/v1/products`: consulta productos desde el flujo externo de `product-api`.
+
+### Cifrado
+
+- `POST /encrypt`: recibe un JSON plano y responde con `iv`, `tag` y `data`.
+- `POST /decrypt`: recibe un payload cifrado y devuelve el JSON descifrado.
+
+### Autenticacion
+
+- `POST /auth/login`: valida credenciales contra `user-api` y retorna un `access_token`.
+
+## Ejemplos de consumo
+
+Registro de usuario:
 
 ```bash
-$ npm install
+curl --location 'http://localhost:3001/users-api/v1/registration' \
+--header 'Content-Type: application/json' \
+--data '{
+    "iv": "piYYX6g0CLSaDhW1",
+    "tag": "4m+97eklX9n7mH81uRJPGw==",
+    "data": "RHtk6yAkplZIyBRiufKENMxpCCLtcDvMjgUGEVcDXjIgTluqG8ICD6mYhEQikMggd/FlW6nwCEM6sUICWwn0KF4k0iHHqtkDW4CzqZ7nI1vQNJ8="
+}'
 ```
 
-## Compile and run the project
+Consulta de usuario:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+curl --location 'http://localhost:3001/users-api/v1/read' \
+--header 'Content-Type: application/json' \
+--data '{
+    "iv": "V8IKmwOuShQ7sgO4",
+    "tag": "xxGFOiH+x9BYINCrvIbpUQ==",
+    "data": "QtWvVNEZc42bSDq2SroVZbKHzcXx5mWSgPwDazFIWq0WRBfSueIlBS//0dRCT4KbhRXD6ze2hBUMTsOzmcE="
+}'
 ```
 
-## Run tests
+Registro de producto:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+curl --location 'http://localhost:3001/products/v1/registration' \
+--header 'Content-Type: application/json' \
+--data '{
+    "iv": "gHsPgn/BIHCiVx9W",
+    "tag": "D8eraTXFQboeRFouFQpKtg==",
+    "data": "yhGvBQonQxv3wSbuTpCxhf6rQO6ZQ0inR9A9xMPvLP5jpmfNnUxUBBiox3Is6wWHWK/wGSn5PeDKMp8KQJzSP26OYcDQy1KYuAmZ"
+}'
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Consulta de productos registrados:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+curl --location 'http://localhost:3001/products/v1/read?user=CC1111' \
+--header 'Authorization: Bearer {{vault:authorization-secret}}'
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Consulta de productos externos:
 
-## Resources
+```bash
+curl --location 'http://localhost:3001/products/v1/products?user=CC12346'
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+Cifrar payload:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+curl --location 'http://localhost:3001/encrypt' \
+--header 'Content-Type: application/json' \
+--data '{
+  "productType": "PERSONAL_LOAN",
+  "user": "CC1111",
+  "amount": 500000000,
+  "term": 24
+}'
+```
 
-## Support
+Descifrar payload:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+curl --location 'http://localhost:3001/decrypt' \
+--header 'Content-Type: application/json' \
+--data '{
+    "iv": "NtHGaBV4G0gD5heK",
+    "tag": "vE4SgHE0HuUeoCrw69vDBA==",
+    "data": "fbLZOvx8PNK/1orIjb6Bx15uPMTK8uNnf57FpKSv/9XuN348uQRbIOZfIY6W+zUqyPwPoMFZeycoDDIf18w3FaSv9mvg5+h4LHRgRQVtJQ=="
+}'
+```
 
-## Stay in touch
+Login y generacion de token:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+curl --location 'http://localhost:3001/auth/login' \
+--header 'Content-Type: application/json' \
+--data '{
+    "iv": "whO3xwcA76/Yjf9V",
+    "tag": "hAG32Wm5D/RrImT43ddqkw==",
+    "data": "4XDyNti+FwSnhqnHxu9dxAxOK+LxG+PHcyMFOHOzeWgyJM7BFXtoemhUVV0pd7fsQIB/8r7zRuM8u06zLd8="
+}'
+```
 
-## License
+## Integraciones
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- `user-api`: registro y consulta de usuarios.
+- `product-api`: registro y consulta de productos.
+- `bcs-frontend`: cliente principal que consume este gateway.
+- `Datadog`: metricas via `hot-shots`.
+- `Grafana / OpenTelemetry`: exportacion de logs y telemetria.
+
+## Estructura del codigo
+
+```text
+src/
+  auth/
+  commons/
+  routes/
+    encrypt/
+    products/
+    user-api/
+  app.module.ts
+  main.ts
+```
+
+## Ejecucion
+
+Instalar dependencias:
+
+```bash
+npm install
+```
+
+Levantar en desarrollo:
+
+```bash
+npm run start:dev
+```
+
+Compilar:
+
+```bash
+npm run build
+```
+
+## Testing
+
+- `npm test`: pruebas unitarias.
+- `npm run test:e2e`: pruebas end-to-end.
+- `npm run test:cov`: cobertura.
+
+## Observabilidad
+
+El servicio inicializa `OpenTelemetry` desde `src/main.ts` e importa `src/commons/tracing.ts`. Adicionalmente, publica metricas por `StatsD` usando `DD_AGENT_HOST` como destino para el agente de `Datadog`.
