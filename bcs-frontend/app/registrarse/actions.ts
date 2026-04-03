@@ -45,6 +45,14 @@ export async function registerUser(
   const username = String(formData.get("username") || "").trim();
   const password = String(formData.get("password") || "");
 
+  console.log("[register-action] received registration request", {
+    backApi,
+    documentType,
+    documentNumber,
+    username,
+    passwordLength: password.length,
+  });
+
   if (!Object.values(DocumentType).includes(documentType as DocumentType)) {
     return {
       message: "El tipo de documento seleccionado no es valido.",
@@ -73,9 +81,15 @@ export async function registerUser(
       username,
       password,
     };
+    console.log("[register-action] payload before encryption", {
+      documentType,
+      documentNumber: numericDocumentNumber,
+      username,
+      passwordLength: password.length,
+    });
     const encryptedPayload = cryptoService.encrypt(payload);
 
-    const response = await fetch(`${backApi}/products/v1/registration`, {
+    const response = await fetch(`${backApi}/users-api/v1/registration`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -89,6 +103,13 @@ export async function registerUser(
       ? cryptoService.decrypt(rawResponse)
       : rawResponse;
 
+    console.log("[register-action] backend response", {
+      status: response.status,
+      ok: response.ok,
+      rawResponse,
+      decryptedResponse: data,
+    });
+
     if (!response.ok) {
       return {
         message:
@@ -97,7 +118,8 @@ export async function registerUser(
             : "No fue posible completar el registro.",
       };
     }
-  } catch {
+  } catch (error) {
+    console.error("[register-action] registration request failed", error);
     return {
       message: "No fue posible conectar con el servicio de registro.",
     };

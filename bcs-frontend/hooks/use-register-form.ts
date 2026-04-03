@@ -19,6 +19,15 @@ const initialValues: RegisterFormValues = {
   password: "",
 };
 
+function sanitizeRegisterValues(values: RegisterFormValues) {
+  return {
+    documentType: values.documentType,
+    documentNumber: values.documentNumber,
+    username: values.username,
+    passwordLength: values.password.length,
+  };
+}
+
 export function useRegisterForm() {
   const [values, setValues] = useState<RegisterFormValues>(initialValues);
   const [errors, setErrors] = useState<RegisterFormErrors>({});
@@ -46,6 +55,11 @@ export function useRegisterForm() {
   }
 
   function handleChange(field: keyof RegisterFormValues, value: string) {
+    console.log("[register-form] handleChange", {
+      field,
+      value: field === "password" ? `[length:${value.length}]` : value,
+    });
+
     setValues((currentValues) => ({
       ...currentValues,
       [field]: value,
@@ -65,13 +79,19 @@ export function useRegisterForm() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     const nextErrors = validate(values);
+    console.log("[register-form] submit", {
+      values: sanitizeRegisterValues(values),
+      errors: nextErrors,
+    });
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
+      console.warn("[register-form] prevented submit due to validation errors");
       event.preventDefault();
       return false;
     }
 
+    console.log("[register-form] validation passed, submitting form");
     return true;
   }
 

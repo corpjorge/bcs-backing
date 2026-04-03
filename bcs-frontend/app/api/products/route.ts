@@ -9,6 +9,14 @@ const productImages: Record<string, string> = {
   PERSONAL_LOAN: "/cuenta.png",
 };
 
+const productTitles: Record<string, string> = {
+  CDT: "CDT",
+  MORTGAGE: "Credito Hipotecario",
+  CREDIT_CARD: "Tarjeta de Credito",
+  SAVINGS_ACCOUNT: "Cuenta Amiga",
+  PERSONAL_LOAN: "Libre inversion",
+};
+
 type ApiProduct = {
   type: string;
   title: string;
@@ -74,7 +82,7 @@ function normalizeProducts(payload: unknown) {
 
   return rawProducts.map((product, index) => ({
     type: product.type,
-    title: product.title,
+    title: productTitles[product.type] ?? product.title,
     amount: product.amount,
     description: product.description,
     image: productImages[product.type] ?? "/cuenta.png",

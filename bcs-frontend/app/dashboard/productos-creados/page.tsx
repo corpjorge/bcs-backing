@@ -18,6 +18,14 @@ type RequestedProduct = {
   status: string;
 };
 
+const productTitles: Record<string, string> = {
+  CDT: "CDT",
+  MORTGAGE: "Credito Hipotecario",
+  CREDIT_CARD: "Tarjeta de Credito",
+  SAVINGS_ACCOUNT: "Cuenta Amiga",
+  PERSONAL_LOAN: "Libre inversion",
+};
+
 function isEncryptedPayload(value: unknown): value is EncryptedPayload {
   if (!value || typeof value !== "object") {
     return false;
@@ -97,7 +105,7 @@ function normalizeRequestedProducts(payload: unknown): RequestedProduct[] {
           ? item.title
           : typeof item.productName === "string"
             ? item.productName
-            : productType;
+            : productTitles[productType] ?? productType;
 
       return {
         id:
@@ -107,7 +115,7 @@ function normalizeRequestedProducts(payload: unknown): RequestedProduct[] {
               ? item.requestId
               : `${productType}-${index}`,
         productType,
-        title,
+        title: productTitles[productType] ?? title,
         amount:
           typeof item.amount === "number"
             ? item.amount

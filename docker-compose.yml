@@ -7,7 +7,7 @@ services:
     env_file:
       - ./bcs-frontend/.env
     environment:
-      BACKENDAPI: routing:3001
+      BACKENDAPI: http://routing:3001
     depends_on:
       - routing
     ports:

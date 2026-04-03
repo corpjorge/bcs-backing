@@ -18,6 +18,14 @@ const initialValues: LoginFormValues = {
   contrasena: "",
 };
 
+function sanitizeLoginValues(values: LoginFormValues) {
+  return {
+    documentType: values.documentType,
+    usuario: values.usuario,
+    contrasenaLength: values.contrasena.length,
+  };
+}
+
 export function useLoginForm() {
   const [values, setValues] = useState<LoginFormValues>(initialValues);
   const [errors, setErrors] = useState<LoginFormErrors>({});
@@ -41,6 +49,11 @@ export function useLoginForm() {
   }
 
   function handleChange(field: keyof LoginFormValues, value: string) {
+    console.log("[login-form] handleChange", {
+      field,
+      value: field === "contrasena" ? `[length:${value.length}]` : value,
+    });
+
     setValues((currentValues) => ({
       ...currentValues,
       [field]: value,
@@ -60,13 +73,19 @@ export function useLoginForm() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     const nextErrors = validate(values);
+    console.log("[login-form] submit", {
+      values: sanitizeLoginValues(values),
+      errors: nextErrors,
+    });
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
+      console.warn("[login-form] prevented submit due to validation errors");
       event.preventDefault();
       return false;
     }
 
+    console.log("[login-form] validation passed, submitting form");
     return true;
   }
 

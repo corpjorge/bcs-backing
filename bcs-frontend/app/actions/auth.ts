@@ -83,6 +83,13 @@ export async function loginUser(
   const documentNumber = String(formData.get("usuario") || "").trim();
   const password = String(formData.get("contrasena") || "");
 
+  console.log("[login-action] received login request", {
+    backApi,
+    documentType,
+    documentNumber,
+    passwordLength: password.length,
+  });
+
   if (!Object.values(DocumentType).includes(documentType as DocumentType)) {
     return {
       message: "El tipo de documento seleccionado no es valido.",
@@ -112,6 +119,11 @@ export async function loginUser(
       documentNumber: numericDocumentNumber,
       password,
     };
+    console.log("[login-action] payload before encryption", {
+      documentType,
+      documentNumber: numericDocumentNumber,
+      passwordLength: password.length,
+    });
     const encryptedPayload = cryptoService.encrypt(payload);
 
     const response = await fetch(`${backApi}/auth/login`, {
@@ -127,6 +139,13 @@ export async function loginUser(
     const decryptedResponse = isEncryptedPayload(rawResponse)
       ? cryptoService.decrypt(rawResponse)
       : rawResponse;
+
+    console.log("[login-action] backend response", {
+      status: response.status,
+      ok: response.ok,
+      rawResponse,
+      decryptedResponse,
+    });
 
     if (!response.ok) {
       return {
@@ -174,7 +193,8 @@ export async function loginUser(
     });
 
     redirectToAuthenticated = true;
-  } catch {
+  } catch (error) {
+    console.error("[login-action] login request failed", error);
     return {
       message: "No fue posible conectar con el servicio de login.",
     };
