@@ -1,98 +1,149 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# user-api
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Microservicio construido con `NestJS` para la gestion de usuarios de la plataforma. Se encarga de registrar usuarios, almacenar sus credenciales de forma segura y validar el acceso consultando la informacion persistida en `MongoDB`.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Que hace este proyecto
 
-## Description
+- Registra usuarios con tipo y numero de documento.
+- Almacena la contrasena de forma segura usando hash con `scrypt`.
+- Consulta usuarios validando credenciales.
+- Expone metricas con `Datadog` y logs con `OpenTelemetry`.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Arquitectura
 
-## Project setup
+El proyecto sigue una arquitectura hexagonal por modulo, separando:
 
-```bash
-$ npm install
+- `application`: casos de uso y servicios de negocio.
+- `domain`: modelos y puertos.
+- `infrastructure`: controladores, repositorios y esquemas.
+- `commons`: componentes transversales como metricas y tracing.
+
+Modulos principales:
+
+- `registration`: registra usuarios en `MongoDB`.
+- `read`: valida credenciales y consulta datos del usuario.
+
+## Diagrama de arquitectura
+
+![user-api.png](../doc/user-api.png)
+
+## Endpoints principales
+
+### `POST /v1/registration`
+
+Registra un usuario nuevo.
+
+Ejemplo de payload:
+
+```json
+{
+  "documentType": "CC",
+  "documentNumber": 1111,
+  "username": "Jorge X",
+  "password": "1111"
+}
 ```
 
-## Compile and run the project
+Tipos de documento soportados:
 
-```bash
-# development
-$ npm run start
+- `CC`
+- `CE`
+- `TI`
 
-# watch mode
-$ npm run start:dev
+### `POST /v1/read`
 
-# production mode
-$ npm run start:prod
+Valida credenciales y consulta la informacion del usuario.
+
+Ejemplo de payload:
+
+```json
+{
+  "documentType": "CC",
+  "documentNumber": 2123,
+  "password": "2123"
+}
 ```
 
-## Run tests
+## Ejemplos de consumo
+
+Registrar un usuario:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+curl --location 'http://localhost:3002/v1/registration' \
+--header 'Content-Type: application/json' \
+--data '{
+    "documentType": "CC",
+    "documentNumber": 1111,
+    "username": "Jorge X",
+    "password": "1111"
+}'
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Consultar usuario validando credenciales:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+curl --location 'http://localhost:3002/v1/read' \
+--header 'Content-Type: application/json' \
+--data '{
+    "documentType": "CC",
+    "documentNumber": 2123,
+    "password": "2123"
+}'
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Persistencia e integraciones
 
-## Resources
+- `MongoDB`: persistencia principal para usuarios y credenciales.
+- `Datadog`: metricas via `hot-shots`.
+- `Grafana / OpenTelemetry`: exportacion de logs y telemetria.
 
-Check out a few resources that may come in handy when working with NestJS:
+## Seguridad
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- La contrasena no se almacena en texto plano.
+- El registro aplica hash con `scrypt` y `salt`.
+- La consulta de usuario valida la contrasena con comparacion segura.
 
-## Support
+## Estructura del codigo
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```text
+src/
+  api/
+    registration/
+    read/
+  commons/
+    metrics.module.ts
+    metrics.service.ts
+    tracing.ts
+  app.module.ts
+  main.ts
+```
 
-## Stay in touch
+## Ejecucion
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Instalar dependencias:
 
-## License
+```bash
+npm install
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Levantar en desarrollo:
+
+```bash
+npm run start:dev
+```
+
+Compilar:
+
+```bash
+npm run build
+```
+
+## Testing
+
+- `npm test`: pruebas unitarias.
+- `npm run test:e2e`: pruebas end-to-end.
+- `npm run test:cov`: cobertura.
+
+## Observabilidad
+
+El servicio inicializa `OpenTelemetry` desde `src/main.ts` e importa `src/commons/tracing.ts`. Adicionalmente, publica metricas por `StatsD` usando `DD_AGENT_HOST` como destino para el agente de `Datadog`.
