@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { logoutUser } from "@/app/actions/session";
 import { encryptClientPayload } from "@/shared/encrypt-client";
 
 export type Product = {
@@ -101,12 +102,24 @@ export function DashboardScreen({
     return (
       <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fafdff_0%,#f5f7fa_45%,#edf2f9_100%)] px-5 py-8 sm:px-8 lg:px-10">
         <div className="mx-auto max-w-4xl rounded-[28px] border border-white/70 bg-white/75 p-8 shadow-[0_18px_55px_rgba(33,84,160,0.08)] backdrop-blur">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#1b6edc]">
-            Portal Personas
-          </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1a1a1a]">
-            Inicie su solicitud aqui
-          </h1>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#1b6edc]">
+                Portal Personas
+              </p>
+              <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1a1a1a]">
+                Inicie su solicitud aqui
+              </h1>
+            </div>
+            <form action={logoutUser}>
+              <button
+                type="submit"
+                className="inline-flex h-11 items-center justify-center rounded-full border border-[#d9e6f7] bg-white px-6 text-sm font-semibold text-[#1b4fae] transition hover:border-[#b7d0f3] hover:bg-[#f7fbff]"
+              >
+                Salir
+              </button>
+            </form>
+          </div>
           <p className="mt-4 max-w-2xl text-base leading-7 text-[#b42318]">
             {errorMessage}
           </p>
@@ -119,12 +132,24 @@ export function DashboardScreen({
     return (
       <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fafdff_0%,#f5f7fa_45%,#edf2f9_100%)] px-5 py-8 sm:px-8 lg:px-10">
         <div className="mx-auto max-w-4xl rounded-[28px] border border-white/70 bg-white/75 p-8 shadow-[0_18px_55px_rgba(33,84,160,0.08)] backdrop-blur">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#1b6edc]">
-            Portal Personas
-          </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1a1a1a]">
-            Inicie su solicitud aqui
-          </h1>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#1b6edc]">
+                Portal Personas
+              </p>
+              <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1a1a1a]">
+                Inicie su solicitud aqui
+              </h1>
+            </div>
+            <form action={logoutUser}>
+              <button
+                type="submit"
+                className="inline-flex h-11 items-center justify-center rounded-full border border-[#d9e6f7] bg-white px-6 text-sm font-semibold text-[#1b4fae] transition hover:border-[#b7d0f3] hover:bg-[#f7fbff]"
+              >
+                Salir
+              </button>
+            </form>
+          </div>
           <p className="mt-4 max-w-2xl text-base leading-7 text-[#6b7280]">
             No hay productos disponibles para este usuario en este momento.
           </p>
@@ -152,12 +177,24 @@ export function DashboardScreen({
             </div>
 
             <div className="rounded-[24px] border border-[#dbe8ff] bg-[#e7f0ff] px-5 py-4 text-[#1b4fae] shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em]">
-                Seleccion actual
-              </p>
-              <p className="mt-2 text-xl font-semibold tracking-[-0.03em]">
-                {products.find((product) => product.type === selectedProduct)?.title}
-              </p>
+              <div className="flex items-start gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em]">
+                    Seleccion actual
+                  </p>
+                  <p className="mt-2 text-xl font-semibold tracking-[-0.03em]">
+                    {products.find((product) => product.type === selectedProduct)?.title}
+                  </p>
+                </div>
+                <form action={logoutUser}>
+                  <button
+                    type="submit"
+                    className="inline-flex h-11 items-center justify-center rounded-full border border-[#b7d0f3] bg-white px-6 text-sm font-semibold text-[#1b4fae] transition hover:border-[#8fb6eb] hover:bg-[#f7fbff]"
+                  >
+                    Salir
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>

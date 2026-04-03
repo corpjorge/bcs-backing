@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { logoutUser } from "@/app/actions/session";
 
 type RequestedProduct = {
   id: string;
@@ -50,6 +51,14 @@ export function RequestedProductsScreen({
             >
               Volver al inicio
             </Link>
+            <form action={logoutUser}>
+              <button
+                type="submit"
+                className="inline-flex h-12 items-center justify-center rounded-full border border-[#d9e6f7] bg-white px-8 text-base font-semibold text-[#1b4fae] transition hover:border-[#b7d0f3] hover:bg-[#f7fbff]"
+              >
+                Salir
+              </button>
+            </form>
           </div>
         </div>
 
