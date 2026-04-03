@@ -38,9 +38,10 @@ Flujo principal de comunicacion:
 - El usuario consume la interfaz web en `bcs-frontend`.
 - El frontend se comunica con `routing`.
 - `routing` centraliza las llamadas hacia `user-api` y `product-api`.
+- `routing` puede consumir servicios externos expuestos por `MuleSoft` mediante un mock para ambientes de desarrollo o pruebas.
 - `user-api` y `product-api` persisten informacion en `MongoDB`.
 - `product-api` usa `Redis` como apoyo para cache.
-- Los servicios backend envian telemetria a `Datadog / Grafana`.
+- Los servicios backend envian telemetria a `Datadog`.
 
 ## Aplicaciones
 
@@ -55,8 +56,8 @@ Flujo principal de comunicacion:
 - `NestJS` y TypeScript para los servicios backend.
 - `MongoDB` como base de datos principal.
 - `Redis` para cache y soporte de alto rendimiento.
+- `Postman / MuleSoft` como integracion externa simulada mediante mock para pruebas de consumo.
 - `Datadog` y `OpenTelemetry` para trazabilidad y monitoreo.
 - `Arquitectura hexagonal` para separar dominio, aplicacion e infraestructura.
-
 
 
