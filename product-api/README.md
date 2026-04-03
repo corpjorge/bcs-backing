@@ -62,6 +62,33 @@ Consulta los productos registrados para un usuario.
 
 Consulta productos desde la integracion externa tipo `MuleSoft`. El servicio intenta responder primero desde `Redis`; si no existe informacion en cache, consume la fuente externa y guarda el resultado.
 
+## Ejemplos de consumo
+
+Registrar un producto:
+
+```bash
+curl --location 'http://localhost:3003/v1/registration' \
+--header 'Content-Type: application/json' \
+--data '{
+  "productType": "PERSONAL_LOAN",
+  "user": "CC1111",
+  "amount": 500000000,
+  "term": 24
+}'
+```
+
+Consultar productos registrados:
+
+```bash
+curl --location 'http://localhost:3003/v1/read?user=CC1111'
+```
+
+Consultar productos desde la integracion externa:
+
+```bash
+curl --location 'http://localhost:3003/v1/products?user=CC1111'
+```
+
 ## Persistencia e integraciones
 
 - `MongoDB`: persistencia principal para registro y consulta de productos.
