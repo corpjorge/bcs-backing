@@ -108,3 +108,12 @@ El proyecto incluye una estrategia de QA basada en pruebas unitarias y pruebas e
 - La trazabilidad de incidentes y evidencias de ejecucion puede complementarse con `Datadog` y `Grafana`, facilitando analisis de defectos, monitoreo y seguimiento posterior a pruebas.
 - Despues de ejecutar pruebas funcionales, se pueden revisar metricas, logs y trazabilidad en `Datadog` y `Grafana`.
 - Pendiente: integracion con playwright
+
+## Documentacion por aplicacion
+
+Cada proyecto del monorepo cuenta con su propia documentacion en su respectivo `README.md`, incluyendo informacion especifica de sus APIs, configuracion y forma de ejecucion.
+
+- Frontend: [bcs-frontend/README.md](bcs-frontend/README.md)
+- Routing API: [routing/README.md](routing/README.md)
+- User API: [user-api/README.md](user-api/README.md)
+- Product API: [product-api/README.md](product-api/README.md)
