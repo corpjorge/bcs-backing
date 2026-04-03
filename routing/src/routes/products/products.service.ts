@@ -90,6 +90,33 @@ export class ProductsService {
     }
   }
 
+  async deleteProduct(id: string): Promise<unknown> {
+    const url = `${this.getBaseUrl()}/v1/delete/${id}`;
+    try {
+      const result = await this.deleteRequest<unknown>(url);
+      this.logger.emit({
+        severityText: 'INFO',
+        body: 'product deleted',
+        attributes: {
+          endpoint: '/v1/delete/:id',
+          productId: id,
+        },
+      });
+      return result;
+    } catch (error) {
+      this.logger.emit({
+        severityText: 'ERROR',
+        body: 'product deletion failed',
+        attributes: {
+          endpoint: '/v1/delete/:id',
+          productId: id,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      });
+      throw error;
+    }
+  }
+
   private getBaseUrl(): string {
     const urlProductApi = process.env.URLPRODUCTAPI;
 
@@ -130,6 +157,20 @@ export class ProductsService {
             'Content-Type': 'application/json',
           },
         })
+        .pipe(map((response: AxiosResponse<T>) => response.data)),
+    ).catch((error: unknown) => {
+      if (error instanceof AxiosError && error.response) {
+        return error.response.data as T;
+      }
+
+      throw error;
+    });
+  }
+
+  private deleteRequest<T>(url: string): Promise<T> {
+    return firstValueFrom(
+      this.httpService
+        .delete<T>(url)
         .pipe(map((response: AxiosResponse<T>) => response.data)),
     ).catch((error: unknown) => {
       if (error instanceof AxiosError && error.response) {

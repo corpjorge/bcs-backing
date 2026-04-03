@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { MetricsService } from '../../commons/metrics.service';
 import { AuthGuard } from '../../auth/auth.guard';
@@ -31,6 +40,12 @@ export class ProductsController {
   async createProduct(@Body() data: unknown): Promise<unknown> {
     this.metricsService.increment('controller.metric');
     return await this.service.createProduct(data);
+  }
+
+  @Delete('/delete/:id')
+  async deleteProduct(@Param('id') id: string): Promise<unknown> {
+    this.metricsService.increment('controller.metric');
+    return await this.service.deleteProduct(id);
   }
 }
 
