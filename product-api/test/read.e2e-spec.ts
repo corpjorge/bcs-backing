@@ -2,20 +2,20 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { MulesoftController } from '../src/api/mulesoft/infrastructure/controllers/mulesoft.controller';
-import { ServicePort } from '../src/api/mulesoft/domain/ports/service.port';
+import { ReadController } from '../src/api/read/infrastructure/controllers/read.controller';
+import { ServicePort } from '../src/api/read/domain/ports/service.port';
 
-describe('MulesoftController (e2e)', () => {
+describe('ReadController (e2e)', () => {
   let app: INestApplication<App>;
   const service = {
-    get: jest.fn(),
+    read: jest.fn(),
   };
 
   beforeEach(async () => {
-    service.get.mockReset();
+    service.read.mockReset();
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      controllers: [MulesoftController],
+      controllers: [ReadController],
       providers: [
         {
           provide: ServicePort,
@@ -28,29 +28,30 @@ describe('MulesoftController (e2e)', () => {
     await app.init();
   });
 
-  it('GET /v1/products returns the service response', async () => {
+  it('GET /v1/read returns the service response', async () => {
     const response = { message: 'ok', data: { user: 'abc123' } };
-    service.get.mockResolvedValue(response);
+    service.read.mockResolvedValue(response);
 
     await request(app.getHttpServer())
-      .get('/v1/products')
+      .get('/v1/read')
       .query({ user: 'abc123' })
       .expect(200)
       .expect(response);
 
-    expect(service.get).toHaveBeenCalledWith({ user: 'abc123' });
+    expect(service.read).toHaveBeenCalledWith({ user: 'abc123' });
   });
 
-  it('GET /v1/products returns 400 for invalid user', async () => {
+  it('GET /v1/read returns 400 for invalid user', async () => {
     await request(app.getHttpServer())
-      .get('/v1/products')
+      .get('/v1/read')
       .query({ user: 'bad-user!' })
       .expect(400);
 
-    expect(service.get).not.toHaveBeenCalled();
+    expect(service.read).not.toHaveBeenCalled();
   });
 
   afterEach(async () => {
     await app.close();
   });
 });
+
