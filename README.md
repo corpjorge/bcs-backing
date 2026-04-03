@@ -4,7 +4,7 @@ Monorepo que agrupa multiples aplicaciones para la plataforma BCS: un frontend e
 
 ## Implementar el proyecto con Docker Compose
 
-Para construir y ejecutar todos los servicios definidos en [`docker-compose.yml`](/C:/Jorge/Dev/bcs/bcs-backing/docker-compose.yml), usa:
+Para construir y ejecutar todos los servicios definidos en [`docker-compose.yml`](docker-compose.yml), usa:
 
 ```bash
 docker compose up --build -d
@@ -70,9 +70,9 @@ La implementacion actual de observabilidad esta presente en `routing`, `user-api
 
 Servicios validados:
 
-- `routing`: prefijo de metricas `routing.` en [routing/src/commons/metrics.service.ts](/C:/Jorge/Dev/bcs/bcs-backing/routing/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [routing/src/main.ts](/C:/Jorge/Dev/bcs/bcs-backing/routing/src/main.ts).
-- `user-api`: prefijo de metricas `nestjs.` en [user-api/src/commons/metrics.service.ts](/C:/Jorge/Dev/bcs/bcs-backing/user-api/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [user-api/src/main.ts](/C:/Jorge/Dev/bcs/bcs-backing/user-api/src/main.ts).
-- `product-api`: prefijo de metricas `product.` en [product-api/src/commons/metrics.service.ts](/C:/Jorge/Dev/bcs/bcs-backing/product-api/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [product-api/src/main.ts](/C:/Jorge/Dev/bcs/bcs-backing/product-api/src/main.ts).
+- `routing`: prefijo de metricas `routing.` en [routing/src/commons/metrics.service.ts](routing/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [routing/src/main.ts](/routing/src/main.ts).
+- `user-api`: prefijo de metricas `nestjs.` en [user-api/src/commons/metrics.service.ts](user-api/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [user-api/src/main.ts](/user-api/src/main.ts).
+- `product-api`: prefijo de metricas `product.` en [product-api/src/commons/metrics.service.ts](/product-api/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [product-api/src/main.ts](/product-api/src/main.ts).
 
 ## <img src="doc/datadog-logo.png" alt="Datadog logo" width="36" /> DataDog
 
@@ -90,10 +90,10 @@ GRAFANA LINK: https://corpjorge.grafana.net/public-dashboards/4e6d0c00f7cb4fa2b6
 
 El repositorio incorpora apoyo de inteligencia artificial para acelerar tareas de desarrollo backend y frontend mediante recursos definidos en `.codex`.
 
-- Para backend, se utiliza el skill [create-module-nest/SKILL.md](/C:/Jorge/Dev/bcs/bcs-backing/.codex/skills/create-module-nest/SKILL.md), que permite generar modulos NestJS bajo `src/api` con arquitectura hexagonal, incluyendo capas de aplicacion, dominio e infraestructura.
-- Este skill se apoya en el script [create-module-nest.sh](/C:/Jorge/Dev/bcs/bcs-backing/.codex/skills/create-module-nest/scripts/create-module-nest.sh) para crear de forma deterministica controladores, servicios, puertos, repositorios, esquemas y el modulo correspondiente.
-- Para frontend, el repositorio incluye mockups visuales en [.codex/mockups](/C:/Jorge/Dev/bcs/bcs-backing/.codex/mockups) y prompts reutilizables en [.codex/prompts](/C:/Jorge/Dev/bcs/bcs-backing/.codex/prompts) que sirven como base para generar vistas, pantallas y propuestas de diseno en `Next.js`.
-- Entre los recursos disponibles se encuentran referencias para login y dashboard, por ejemplo [login.txt](/C:/Jorge/Dev/bcs/bcs-backing/.codex/prompts/login.txt), [dashboard.txt](/C:/Jorge/Dev/bcs/bcs-backing/.codex/prompts/dashboard.txt) y mockups como [login.png](/C:/Jorge/Dev/bcs/bcs-backing/.codex/mockups/login.png) o [cards.png](/C:/Jorge/Dev/bcs/bcs-backing/.codex/mockups/cards.png).
+- Para backend, se utiliza el skill [create-module-nest/SKILL.md](.codex/skills/create-module-nest/SKILL.md), que permite generar modulos NestJS bajo `src/api` con arquitectura hexagonal, incluyendo capas de aplicacion, dominio e infraestructura.
+- Este skill se apoya en el script [create-module-nest.sh](.codex/skills/create-module-nest/scripts/create-module-nest.sh) para crear de forma deterministica controladores, servicios, puertos, repositorios, esquemas y el modulo correspondiente.
+- Para frontend, el repositorio incluye mockups visuales en [.codex/mockups](.codex/mockups) y prompts reutilizables en [.codex/prompts](.codex/prompts) que sirven como base para generar vistas, pantallas y propuestas de diseno en `Next.js`.
+- Entre los recursos disponibles se encuentran referencias para login y dashboard, por ejemplo [login.txt](/.codex/prompts/login.txt), [dashboard.txt](/.codex/prompts/dashboard.txt) y mockups como [login.png](.codex/mockups/login.png) o [cards.png](.codex/mockups/cards.png).
 
 
 ## QA
