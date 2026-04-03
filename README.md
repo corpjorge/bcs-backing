@@ -123,3 +123,15 @@ Cada proyecto del monorepo cuenta con su propia documentacion en su respectivo `
 - Routing API: [routing/README.md](routing/README.md)
 - User API: [user-api/README.md](user-api/README.md)
 - Product API: [product-api/README.md](product-api/README.md)
+
+
+## Estrategia de liderazgo con el equipo tecnico
+
+La estrategia de liderazgo tecnico para este proyecto se enfoca en alinear al equipo alrededor de arquitectura, seguridad, calidad y entrega continua.
+
+- Definir responsabilidades claras por aplicacion: `bcs-frontend`, `routing`, `user-api` y `product-api`.
+- Mantener criterios comunes de desarrollo sobre arquitectura hexagonal, integraciones, observabilidad y seguridad.
+- Promover revisiones tecnicas de codigo para asegurar consistencia, mantenibilidad y cumplimiento de buenas practicas.
+- Priorizar historias tecnicas y funcionales con enfoque en riesgo, integraciones criticas y valor de negocio.
+- Acompañar la ejecucion con seguimiento de avances, resolucion de bloqueos y validacion continua con QA.
+- Usar `Datadog`, `Grafana` y la documentacion del repositorio como apoyo para toma de decisiones, trazabilidad y mejora continua.
