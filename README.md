@@ -29,6 +29,12 @@ Detener el entorno:
 docker compose down
 ```
 
+## Historias de usuario
+
+Las historias tecnicas y de integracion definidas para el proyecto se encuentran documentadas en:
+
+- [doc/README.md](doc/README.md)
+
 ## Arquitectura
 
 ![flowchart.png](doc/flowchart.png)
