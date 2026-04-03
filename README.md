@@ -80,17 +80,20 @@ Servicios validados:
 - `user-api`: prefijo de metricas `nestjs.` en [user-api/src/commons/metrics.service.ts](user-api/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [user-api/src/main.ts](/user-api/src/main.ts).
 - `product-api`: prefijo de metricas `product.` en [product-api/src/commons/metrics.service.ts](/product-api/src/commons/metrics.service.ts) y bootstrap de OpenTelemetry en [product-api/src/main.ts](/product-api/src/main.ts).
 
+> [!IMPORTANT]
+> Para ver informacion reflejada en los tableros, primero debes arrancar la aplicacion, navegar por los flujos y esperar unos minutos mientras se envian metricas, logs y trazas.
+
 ## <img src="doc/datadog-logo.png" alt="Datadog logo" width="36" /> DataDog
 
 
 ![datadog.png](doc/datadog.png)
 
-DATADOG LINK: https://p.datadoghq.com/sb/i414et4xdvq0gunm-734381b95c91cab1a5340eff1da78fd6
+DATADOG TABLERO LINK: https://p.datadoghq.com/sb/i414et4xdvq0gunm-734381b95c91cab1a5340eff1da78fd6
 
 ## <img src="doc/grafana-logo.png" alt="grafana logo" width="36" /> Grafana
 ![grafana.png](doc/grafana.png)
 
-GRAFANA LINK: https://corpjorge.grafana.net/public-dashboards/4e6d0c00f7cb4fa2b6f8698946542158
+GRAFANA TABLERO LINK: https://corpjorge.grafana.net/public-dashboards/4e6d0c00f7cb4fa2b6f8698946542158
 
 ## IA - Inteligencia Artificial
 
