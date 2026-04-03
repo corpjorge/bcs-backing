@@ -1,0 +1,71 @@
+Usa la imagen proporcionada como referencia visual para construir una pantalla de login moderna.
+
+la imagen esta en la ruta: .codex/mockups/login.png
+
+Objetivo:
+Recrear un layout tipo split-screen (dos columnas).
+
+Estructura:
+- Columna izquierda:
+  - Imagen a pantalla completa (cover)
+  - Imagen lifestyle (madre con niño en sofá usando laptop)
+  - Sin overlays ni texto
+
+- Columna derecha:
+  - Fondo gris muy claro (#f5f6f7 aprox)
+  - Contenido centrado verticalmente
+  - Ancho máximo ~400px
+
+Contenido:
+1. Logo en la parte superior (alineado a la izquierda)
+2. Título grande:
+   "Bienvenido al Portal Personas"
+
+3. Texto descriptivo pequeño debajo del título
+
+4. Input:
+   - Label: "Usuario"
+   - Input con borde redondeado
+   - Placeholder: "Ejemplo: CC1234567890"
+
+5. Botón principal:
+   - Texto: "Siguiente"
+   - Estilo:
+     - background gris azulado
+     - border-radius alto (pill)
+     - padding amplio
+
+6. Link secundario:
+   - "¿Olvidó su contraseña?"
+
+7. Divider horizontal
+
+8. Texto inferior:
+   - "¿Es un cliente nuevo? Registrarse"
+
+Estilo visual:
+- Minimalista
+- Tipografía sans-serif (similar a Inter)
+- Espaciado generoso
+- Bordes suaves (8px–16px)
+- Colores neutros con acento azul
+
+Detalles clave del diseño:
+
+- Layout 50/50 horizontal
+- Imagen izquierda ocupa 100vh
+- Formulario alineado ligeramente hacia arriba (no totalmente centrado)
+- Inputs con borde gris claro
+- Botón con estilo "soft UI" (no muy saturado)
+- Links en azul (#2b6cb0 aprox)
+- Espaciado vertical consistente (16px–24px)
+
+No agregar elementos extra.
+Mantener diseño limpio y corporativo (tipo banca/finanzas).
+
+Tecnología:
+en este proyecto de Nextjs con Tailwind CSS, puedes usar componentes funcionales y clases de Tailwind para lograr el diseño deseado.
+Crear la carpeta components
+
+Responsive:
+- En mobile: layout en columna (imagen arriba, formulario abajo)
