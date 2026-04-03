@@ -86,6 +86,16 @@ DATADOG LINK: https://p.datadoghq.com/sb/i414et4xdvq0gunm-734381b95c91cab1a5340e
 
 GRAFANA LINK: https://corpjorge.grafana.net/public-dashboards/4e6d0c00f7cb4fa2b6f8698946542158
 
+## IA - Inteligencia Artificial
+
+El repositorio incorpora apoyo de inteligencia artificial para acelerar tareas de desarrollo backend y frontend mediante recursos definidos en `.codex`.
+
+- Para backend, se utiliza el skill [create-module-nest/SKILL.md](/C:/Jorge/Dev/bcs/bcs-backing/.codex/skills/create-module-nest/SKILL.md), que permite generar modulos NestJS bajo `src/api` con arquitectura hexagonal, incluyendo capas de aplicacion, dominio e infraestructura.
+- Este skill se apoya en el script [create-module-nest.sh](/C:/Jorge/Dev/bcs/bcs-backing/.codex/skills/create-module-nest/scripts/create-module-nest.sh) para crear de forma deterministica controladores, servicios, puertos, repositorios, esquemas y el modulo correspondiente.
+- Para frontend, el repositorio incluye mockups visuales en [.codex/mockups](/C:/Jorge/Dev/bcs/bcs-backing/.codex/mockups) y prompts reutilizables en [.codex/prompts](/C:/Jorge/Dev/bcs/bcs-backing/.codex/prompts) que sirven como base para generar vistas, pantallas y propuestas de diseno en `Next.js`.
+- Entre los recursos disponibles se encuentran referencias para login y dashboard, por ejemplo [login.txt](/C:/Jorge/Dev/bcs/bcs-backing/.codex/prompts/login.txt), [dashboard.txt](/C:/Jorge/Dev/bcs/bcs-backing/.codex/prompts/dashboard.txt) y mockups como [login.png](/C:/Jorge/Dev/bcs/bcs-backing/.codex/mockups/login.png) o [cards.png](/C:/Jorge/Dev/bcs/bcs-backing/.codex/mockups/cards.png).
+
+
 ## QA
 
 El proyecto incluye una estrategia de QA basada en pruebas unitarias y pruebas end-to-end para validar la logica de negocio, los controladores y la integracion entre servicios.
@@ -97,4 +107,3 @@ El proyecto incluye una estrategia de QA basada en pruebas unitarias y pruebas e
 - A nivel practico, se priorizan flujos criticos mediante `smoke`, `sanity`, `regression` y `exploratory testing`, complementando la evidencia con `Datadog` y `Grafana`.
 - La trazabilidad de incidentes y evidencias de ejecucion puede complementarse con `Datadog` y `Grafana`, facilitando analisis de defectos, monitoreo y seguimiento posterior a pruebas.
 - Despues de ejecutar pruebas funcionales, se pueden revisar metricas, logs y trazabilidad en `Datadog` y `Grafana`.
-
