@@ -5,6 +5,7 @@ import { ReadModule } from './api/read/read.module';
 import { RegistrationModule } from './api/registration/registration.module';
 import { MetricsModule } from './commons/metrics.module';
 import { MulesoftModule } from './api/mulesoft/mulesoft.module';
+import { DeleteModule } from './api/delete/delete.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { MulesoftModule } from './api/mulesoft/mulesoft.module';
     ReadModule,
     RegistrationModule,
     MulesoftModule,
+    DeleteModule,
   ],
 })
 export class AppModule {}
