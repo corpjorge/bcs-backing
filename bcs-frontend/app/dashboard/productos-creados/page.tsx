@@ -111,6 +111,8 @@ function normalizeRequestedProducts(payload: unknown): RequestedProduct[] {
         id:
           typeof item.id === "string"
             ? item.id
+            : typeof item._id === "string"
+              ? item._id
             : typeof item.requestId === "string"
               ? item.requestId
               : `${productType}-${index}`,

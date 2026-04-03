@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { logoutUser } from "@/app/actions/session";
 
 type RequestedProduct = {
@@ -27,6 +28,51 @@ export function RequestedProductsScreen({
   products,
   errorMessage = null,
 }: RequestedProductsScreenProps) {
+  const [items, setItems] = useState(products);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteMessage, setDeleteMessage] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  async function handleDeleteProduct(id: string) {
+    if (!id || deletingId) {
+      return;
+    }
+
+    setDeletingId(id);
+    setDeleteError(null);
+    setDeleteMessage(null);
+
+    try {
+      const response = await fetch(`/api/requested-products/${id}`, {
+        method: "DELETE",
+      });
+      const payload = (await response.json().catch(() => null)) as
+        | { message?: string }
+        | null;
+
+      if (!response.ok) {
+        throw new Error(
+          payload?.message || "No fue posible eliminar el producto.",
+        );
+      }
+
+      setItems((currentItems) =>
+        currentItems.filter((product) => product.id !== id),
+      );
+      setDeleteMessage(
+        payload?.message || "Producto eliminado correctamente.",
+      );
+    } catch (requestError) {
+      setDeleteError(
+        requestError instanceof Error
+          ? requestError.message
+          : "No fue posible eliminar el producto.",
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fafdff_0%,#f5f7fa_45%,#edf2f9_100%)] px-5 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-6xl space-y-8">
@@ -68,15 +114,27 @@ export function RequestedProductsScreen({
           </div>
         ) : null}
 
-        {!errorMessage && products.length === 0 ? (
+        {deleteError ? (
+          <div className="rounded-[24px] border border-[#f3c7c2] bg-white/85 p-6 text-[#b42318] shadow-[0_16px_45px_rgba(25,57,110,0.08)]">
+            {deleteError}
+          </div>
+        ) : null}
+
+        {deleteMessage ? (
+          <div className="rounded-[24px] border border-[#cae8d3] bg-white/85 p-6 text-[#1f7a3d] shadow-[0_16px_45px_rgba(25,57,110,0.08)]">
+            {deleteMessage}
+          </div>
+        ) : null}
+
+        {!errorMessage && items.length === 0 ? (
           <div className="rounded-[24px] border border-white/80 bg-white/85 p-8 text-[#6b7280] shadow-[0_16px_45px_rgba(25,57,110,0.08)]">
             No hay productos creados para este usuario.
           </div>
         ) : null}
 
-        {products.length > 0 ? (
+        {items.length > 0 ? (
           <div className="grid gap-5 md:grid-cols-2">
-            {products.map((product) => (
+            {items.map((product) => (
               <article
                 key={product.id}
                 className="rounded-[24px] border border-white/80 bg-white/90 p-6 shadow-[0_16px_45px_rgba(25,57,110,0.08)]"
@@ -117,6 +175,22 @@ export function RequestedProductsScreen({
                         : "No disponible"}
                     </p>
                   </div>
+                </div>
+
+                <div className="mt-6 flex flex-col gap-3 border-t border-[#edf2f9] pt-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#7f8da3]">
+                    Id Mongo: {product.id}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void handleDeleteProduct(product.id);
+                    }}
+                    disabled={deletingId !== null}
+                    className="inline-flex h-11 items-center justify-center rounded-full border border-[#f0c7c2] bg-[#fff5f4] px-6 text-sm font-semibold text-[#b42318] transition hover:border-[#e9aaa2] hover:bg-[#ffe9e6] disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {deletingId === product.id ? "Eliminando..." : "Eliminar"}
+                  </button>
                 </div>
               </article>
             ))}
